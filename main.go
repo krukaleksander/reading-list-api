@@ -19,14 +19,14 @@ func main() {
 	port := os.Getenv("PORT")
 
 	if port == "" {
-		port = "8080"
+		port = "4000"
 	}
 
-	handleRoutes()
+	router := handleRoutes()
 
 	fmt.Printf("Server is running on port %s\n", port)
 
-	if err := http.ListenAndServe(":"+port, nil); err != nil {
+	if err := http.ListenAndServe(":"+port, router); err != nil {
 		fmt.Println("Error starting server: %s\n", err)
 	}
 }

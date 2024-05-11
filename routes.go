@@ -2,8 +2,12 @@ package main
 
 import (
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
-func handleRoutes() {
-	http.HandleFunc("/health-check", healthCheckHandler)
+func handleRoutes() *mux.Router {
+	router := mux.NewRouter()
+	router.HandleFunc("/health-check", healthCheckHandler).Methods(http.MethodGet)
+	return router
 }
