@@ -8,11 +8,34 @@ import (
 	"github.com/jackc/pgx/v4"
 )
 
+func ensureTableExist(connection *pgx.Conn) error {
+	createTableStatement := `CREATE TABLE IF NOT EXISTS records (
+		ID SERIAL PRIMARY KEY,
+		Description TEXT NOT NULL,
+		Link TEXT NOT NULL
+	);`
+
+	_, err := connection.Exec(context.Background(), createTableStatement)
+
+	if err != nil {
+		return fmt.Errorf("failed to create table %v", err)
+	}
+
+	return nil
+}
+
 func connectToDB() (*pgx.Conn, error) {
 	conn, err := pgx.Connect(context.Background(), os.Getenv("DATABASE_URL"))
 
 	if err != nil {
 		return nil, fmt.Errorf("unable to connect to database: %v", err)
+	}
+
+	tableExistError := ensureTableExist(conn)
+
+	if tableExistError != nil {
+		conn.Close(context.Background())
+		return nil, tableExistError
 	}
 
 	return conn, nil
