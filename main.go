@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"os"
@@ -22,7 +23,16 @@ func main() {
 		port = "4000"
 	}
 
-	router := handleRoutes()
+	connection, connectionError := connectToDB()
+
+	if connectionError != nil {
+		fmt.Fprintf(os.Stderr, "Failed to connect to database %v\n", connectionError)
+		os.Exit(1)
+	}
+
+	defer connection.Close(context.Background())
+
+	router := handleRoutes(connection)
 
 	fmt.Printf("Server is running on port %s\n", port)
 
