@@ -29,6 +29,7 @@ func createRecordHandler(w http.ResponseWriter, r *http.Request, dbConnection *p
 		http.Error(w, "Failed to insert record", http.StatusInternalServerError)
 	}
 
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(record)
 
