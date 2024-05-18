@@ -9,7 +9,7 @@ import (
 
 func main() {
 
-	port := os.Getenv("PORT")
+	port := os.Getenv("API_PORT")
 
 	if port == "" {
 		port = "4000"
