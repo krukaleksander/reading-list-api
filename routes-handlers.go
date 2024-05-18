@@ -41,6 +41,6 @@ func getAllRecordsHandler(w http.ResponseWriter, r *http.Request, dbConnection *
 		http.Error(w, "Failed to fetch records", http.StatusInternalServerError)
 	}
 
-	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(records)
 }
