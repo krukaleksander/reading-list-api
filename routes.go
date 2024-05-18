@@ -9,6 +9,7 @@ import (
 
 func handleRoutes(dbConnection *pgx.Conn) *mux.Router {
 	router := mux.NewRouter()
+	router.Use(BypassAuthForPublicEndpoints)
 	router.HandleFunc("/health-check", healthCheckHandler).Methods(http.MethodGet)
 	router.HandleFunc("/create", func(w http.ResponseWriter, r *http.Request) {
 		createRecordHandler(w, r, dbConnection)
