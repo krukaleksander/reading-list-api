@@ -6,7 +6,7 @@ dev-build:
 	$(COMPOSE) build
 
 dev-start:
-	$(COMPOSE) up -d
+	$(COMPOSE) up
 
 dev-stop:
 	$(COMPOSE) down
