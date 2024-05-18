@@ -51,3 +51,29 @@ func insertNewRecord(connection *pgx.Conn, record Record) error {
 
 	return nil
 }
+
+func getAllRecords(connection *pgx.Conn) ([]Record, error) {
+	sqlStatement := `SELECT id, description, link FROM records`
+	rows, err := connection.Query(context.Background(), sqlStatement)
+
+	if err != nil {
+		return nil, fmt.Errorf("failed to fetch records: %v", err)
+	}
+
+	defer rows.Close()
+
+	var records []Record
+
+	for rows.Next() {
+		var record Record
+		err := rows.Scan(&record.ID, &record.Description, &record.Link)
+
+		if err != nil {
+			return nil, fmt.Errorf("failed to scan record: %v", err)
+		}
+
+		records = append(records, record)
+	}
+
+	return records, nil
+}

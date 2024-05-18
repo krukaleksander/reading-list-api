@@ -33,3 +33,14 @@ func createRecordHandler(w http.ResponseWriter, r *http.Request, dbConnection *p
 	json.NewEncoder(w).Encode(record)
 
 }
+
+func getAllRecordsHandler(w http.ResponseWriter, r *http.Request, dbConnection *pgx.Conn) {
+	records, err := getAllRecords(dbConnection)
+
+	if err != nil {
+		http.Error(w, "Failed to fetch records", http.StatusInternalServerError)
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(records)
+}

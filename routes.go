@@ -14,5 +14,8 @@ func handleRoutes(dbConnection *pgx.Conn) *mux.Router {
 	router.HandleFunc("/create", func(w http.ResponseWriter, r *http.Request) {
 		createRecordHandler(w, r, dbConnection)
 	}).Methods(http.MethodPost)
+	router.HandleFunc("/all", func(w http.ResponseWriter, r *http.Request) {
+		getAllRecordsHandler(w, r, dbConnection)
+	}).Methods(http.MethodGet)
 	return router
 }
