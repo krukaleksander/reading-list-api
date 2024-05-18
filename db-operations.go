@@ -77,3 +77,14 @@ func getAllRecords(connection *pgx.Conn) ([]Record, error) {
 
 	return records, nil
 }
+
+func removeRecord(connection *pgx.Conn, id int64) error {
+	sqlStatement := `DELETE FROM records WHERE id = $1`
+	_, err := connection.Exec(context.Background(), sqlStatement, id)
+
+	if err != nil {
+		return fmt.Errorf("failed to delete record: %v", err)
+	}
+
+	return nil
+}

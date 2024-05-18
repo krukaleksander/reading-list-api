@@ -17,5 +17,8 @@ func handleRoutes(dbConnection *pgx.Conn) *mux.Router {
 	router.HandleFunc("/all", func(w http.ResponseWriter, r *http.Request) {
 		getAllRecordsHandler(w, r, dbConnection)
 	}).Methods(http.MethodGet)
+	router.HandleFunc("/remove", func(w http.ResponseWriter, r *http.Request) {
+		removeRecordHandler(w, r, dbConnection)
+	}).Methods(http.MethodDelete)
 	return router
 }

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/jackc/pgx/v4"
 )
@@ -44,4 +45,28 @@ func getAllRecordsHandler(w http.ResponseWriter, r *http.Request, dbConnection *
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(records)
+}
+
+func removeRecordHandler(w http.ResponseWriter, r *http.Request, dbConnection *pgx.Conn) {
+	idFromParam := r.URL.Query().Get("id")
+	if idFromParam == "" {
+		http.Error(w, "ID is required", http.StatusBadRequest)
+		return
+	}
+
+	id, err := strconv.ParseInt(idFromParam, 10, 64)
+	if err != nil {
+		http.Error(w, "Invalid ID format", http.StatusBadRequest)
+		return
+	}
+
+	err = removeRecord(dbConnection, id)
+	if err != nil {
+		http.Error(w, "Failed to delete record", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(`{"message": "Record deleted successfully"}`))
 }
