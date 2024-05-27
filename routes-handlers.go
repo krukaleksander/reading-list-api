@@ -9,11 +9,17 @@ import (
 	"github.com/jackc/pgx/v4"
 )
 
+func enableCors(w *http.ResponseWriter) {
+	(*w).Header().Set("Access-Control-Allow-Origin", "*")
+}
+
 func healthCheckHandler(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
 	fmt.Fprintf(w, "Service is up and running!")
 }
 
 func createRecordHandler(w http.ResponseWriter, r *http.Request, dbConnection *pgx.Conn) {
+
 	var record Record
 
 	jsonParsingError := json.NewDecoder(r.Body).Decode(&record)
@@ -30,6 +36,7 @@ func createRecordHandler(w http.ResponseWriter, r *http.Request, dbConnection *p
 		http.Error(w, "Failed to insert record", http.StatusInternalServerError)
 	}
 
+	enableCors(&w)
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(record)
@@ -43,6 +50,7 @@ func getAllRecordsHandler(w http.ResponseWriter, r *http.Request, dbConnection *
 		http.Error(w, "Failed to fetch records", http.StatusInternalServerError)
 	}
 
+	enableCors(&w)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(records)
 }
@@ -66,6 +74,7 @@ func removeRecordHandler(w http.ResponseWriter, r *http.Request, dbConnection *p
 		return
 	}
 
+	enableCors(&w)
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(`{"message": "Record deleted successfully"}`))
